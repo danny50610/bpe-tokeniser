@@ -1,0 +1,10 @@
+{
+    "name": "danny50610/bpe-tokeniser",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Danny50610\\BpeTokeniser\\": "src/"
+        }
+    },
+    "require": {}
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+    <description>PHPCS configuration file.</description>
+
+    <file>app</file>
+    <file>tests</file>
+
+    <exclude-pattern>./vendor/*</exclude-pattern>
+
+    <rule ref="PSR12">
+        <!-- 讓 use trait 不用一行一個 -->
+        <exclude name="PSR12.Traits.UseDeclaration"/>
+        <!-- 移除字數限制 (有時很難符合) -->
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+
+    <rule ref="Generic.CodeAnalysis.AssignmentInCondition"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName.StringNotCamelCaps"/>
+
+    <!-- 讓 test function 可以用 test_api_found_404 的樣式 -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+</ruleset>
