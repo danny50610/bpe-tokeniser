@@ -1,0 +1,10 @@
+{
+    "namespaceResolver.sortAlphabetically": true,
+    "search.exclude": {
+        "**/.git": true,
+    },
+    "intelephense.environment.phpVersion": "8.1.0",
+    "[php]": {
+        "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
+    },
+}

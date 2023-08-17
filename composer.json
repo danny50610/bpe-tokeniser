@@ -6,5 +6,7 @@
             "Danny50610\\BpeTokeniser\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "ext-ds": "*"
+    }
 }
