@@ -98,6 +98,7 @@ class Encoding
                 // parts[i] and parts[i-1] before removing, which could thrash
                 // the cache. Thus, we update the rank calculation by skipping over
                 // parts[i + 1], by invoking `get_rank!` with `skip = 1`.
+                // NOTE 2: NOTE is for rust. PHP is not verify this strategy yet.
                 $newValue = $getRank($parts, $i, 1);
                 $parts[$i][1] = is_null($newValue) ? PHP_INT_MAX : $newValue;
                 if ($i > 0) {
