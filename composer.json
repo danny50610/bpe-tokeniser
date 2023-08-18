@@ -22,7 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Danny50610\\BpeTokeniser\\Tests\\": "tests"
+            "Danny50610\\BpeTokeniser\\Tests\\": "tests/"
         }
     }
 }
