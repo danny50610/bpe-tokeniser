@@ -10,8 +10,8 @@ class Encoding
 
     public function __construct(&$mergeableRanks, $pattenRegex)
     {
-        $this->pattenRegex = $pattenRegex;
         $this->mergeableRanks = $mergeableRanks;
+        $this->pattenRegex = $pattenRegex;
     }
 
     public function encodeOrdinary(string $text): array
@@ -19,8 +19,6 @@ class Encoding
         $result = [];
         preg_match_all($this->pattenRegex, $text, $matches);
         foreach ($matches[0] as $match) {
-            var_dump($match);
-
             $token = $this->mergeableRanks[$match] ?? null;
             if (!is_null($token)) {
                 $result[] = $token;
