@@ -11,7 +11,7 @@ class Encoding
     public function __construct(&$mergeableRanks, $pattenRegex)
     {
         $this->mergeableRanks = $mergeableRanks;
-        $this->pattenRegex = $pattenRegex;
+        $this->pattenRegex = $pattenRegex . 'u'; // u for unicode
     }
 
     public function encodeOrdinary(string $text): array
