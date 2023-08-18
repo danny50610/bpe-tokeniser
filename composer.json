@@ -1,5 +1,6 @@
 {
     "name": "danny50610/bpe-tokeniser",
+    "description": "PHP port for openai/tiktoken",
     "type": "library",
     "license": "MIT",
     "authors": [
