@@ -38,8 +38,7 @@ class Encoding
         // This is a vector of (start, rank).
         // The rank is of the byte pair starting at position start.
         // The rank of the last item in the vector is not a valid value.
-        $parts = new \Ds\Vector();
-        $parts->allocate(strlen($piece) + 1);
+        $parts = [];
         for ($i = 0; $i < strlen($piece) + 1; $i++) {
             $parts[] = [$i, PHP_INT_MAX];
         }
@@ -104,7 +103,7 @@ class Encoding
                     $parts[$i - 1][1] = is_null($newValue) ? PHP_INT_MAX : $newValue;
                 }
 
-                $parts->remove($i + 1);
+                array_splice($parts, $i + 1, 1, null);
             } else {
                 break;
             }
