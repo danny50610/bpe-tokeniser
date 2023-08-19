@@ -12,5 +12,10 @@
     "words": [
         "mergeable",
         "tokeniser",
+        "Tiktoken",
+        "ENDOFTEXT",
+        "ENDOFPROMPT",
+        "davinci",
+        "cushman",
     ]
 }
