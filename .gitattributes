@@ -1,0 +1,14 @@
+# https://php.watch/articles/composer-gitattributes
+
+# folder
+/.vscode            export-ignore
+/tests              export-ignore
+# file
+/.gitattributes     export-ignore
+/composer.lock      export-ignore
+/cspell.json        export-ignore
+/phpcs.xml          export-ignore
+/phpunit.xml        export-ignore
+
+*.php diff=php
+*.phar -diff
