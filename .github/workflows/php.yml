@@ -10,11 +10,19 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        phpVersion: ['8.1', '8.2']
+
     steps:
+    - name: Setup PHP with specific version of PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.phpVersion }}
+
     - uses: actions/checkout@v3
 
     - name: Validate composer.json and composer.lock
