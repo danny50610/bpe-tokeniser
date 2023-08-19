@@ -2,18 +2,72 @@
 
 namespace Danny50610\BpeTokeniser;
 
+use Exception;
+use ValueError;
+
 class Encoding
 {
     protected $mergeableRanks;
 
+    protected $decodeMergeableRanks;
+
     protected $pattenRegex;
 
-    public function __construct(&$mergeableRanks, $pattenRegex)
+    protected $specialRegex;
+
+    protected $specialTokens;
+
+    protected $decodeSpecialTokens;
+
+    public function __construct(&$mergeableRanks, string $pattenRegex, array $specialTokens)
     {
         $this->mergeableRanks = $mergeableRanks;
         $this->pattenRegex = $pattenRegex . 'u'; // u for unicode
+        $this->specialTokens = $specialTokens;
+
+        $escapeToken = [];
+        foreach ($this->specialTokens as $token => $rank) {
+            $escapeToken[] = str_replace('|', '\|', $token);
+        }
+        $this->specialRegex = '/' . implode('|', $escapeToken) . '/u';
+
+        // for decode
+        $this->decodeMergeableRanks = [];
+        foreach ($this->mergeableRanks as $token => $rank) {
+            $this->decodeMergeableRanks[$rank] = $token;
+        }
+
+        if (count($this->mergeableRanks) !== count($this->decodeMergeableRanks)) {
+            throw new Exception('Encoder and decoder must be of equal length; maybe you had duplicate token indices in your encoder?');
+        }
+
+        $this->decodeSpecialTokens = [];
+        foreach ($this->specialTokens as $token => $rank) {
+            $this->decodeSpecialTokens[$rank] = $token;
+        }
+
+        /** TODO: check
+        self.max_token_value = max(
+            max(mergeable_ranks.values()), max(special_tokens.values(), default=0)
+        )
+        if explicit_n_vocab:
+            assert len(mergeable_ranks) + len(special_tokens) == explicit_n_vocab
+            assert self.max_token_value == explicit_n_vocab - 1
+         */
     }
 
+    public function getSpecialTokensSet()
+    {
+        return array_keys($this->specialTokens);
+    }
+
+    /**
+     * Encodes a string into tokens, ignoring special tokens.
+     * This is equivalent to `encode($text, disallowedSpecial=[])` (but slightly faster).
+     *
+     * @param string $text
+     * @return int[]
+     */
     public function encodeOrdinary(string $text): array
     {
         $result = [];
@@ -27,6 +81,89 @@ class Encoding
                 foreach ($resultList as $item) {
                     $result[] = $item;
                 }
+            }
+        }
+
+        return $result;
+    }
+
+    public function encode(string $text, $allowedSpecial = [], $disallowedSpecial = 'all'): array
+    {
+        if ($allowedSpecial === 'all') {
+            $allowedSpecial = $this->getSpecialTokensSet();
+        }
+        if ($disallowedSpecial === 'all') {
+            $disallowedSpecial = array_diff($this->getSpecialTokensSet(), $allowedSpecial);
+        }
+        if (count($disallowedSpecial) > 0) {
+            $escapeToken = [];
+            foreach ($disallowedSpecial as $token) {
+                $escapeToken[] = str_replace('|', '\|', $token);
+            }
+            $disallowedSpecialRegex = '/' . implode('|', $escapeToken) . '/u';
+
+            preg_match_all($disallowedSpecialRegex, $text, $matches);
+            if (count($matches[0]) > 0) {
+                $token = $matches[0][0];
+                throw new ValueError(
+                    "Encountered text corresponding to disallowed special token '{$token}'.\n" .
+                    "If you want this text to be encoded as a special token, " .
+                    "pass it to `allowedSpecial`, e.g. `allowedSpecial: ['{$token}', ...]`.\n" .
+                    "If you want this text to be encoded as normal text, disable the check for this token " .
+                    "by passing `disallowedSpecial: array_diff(\$enc->getSpecialTokensSet(), ['{$token}']))`.\n" .
+                    "To disable this check for all special tokens, pass `disallowedSpecial: []`.\n"
+                );
+            }
+        }
+
+        $result = [];
+        $start = 0;
+        while (true) {
+            $hasNextSpecial = false;
+            $nextSpecial = null;
+
+            $startFind = $start;
+            while (true) {
+                // Find the next allowed special token, if any
+                preg_match($this->specialRegex, $text, $matches, PREG_OFFSET_CAPTURE, $startFind);
+                if (count($matches) > 0) {
+                    if (in_array($matches[0][0], $allowedSpecial, true)) {
+                        $hasNextSpecial = true;
+                        $nextSpecial = $matches[0][0];
+                        break;
+                    }
+
+                    $startFind = $matches[0][1] + 1;
+                } else {
+                    break;
+                }
+            }
+            if ($hasNextSpecial) {
+                $end = $matches[0][1];
+            } else {
+                $end = strlen($text);
+            }
+
+            // Okay, here we go, compare this logic to _encode_ordinary_native
+            preg_match_all($this->pattenRegex, substr($text, $start, $end - $start), $matches);
+            foreach ($matches[0] as $match) {
+                $token = $this->mergeableRanks[$match] ?? null;
+                if (!is_null($token)) {
+                    $result[] = $token;
+                } else {
+                    $resultList = $this->bytePairEncode($match, $this->mergeableRanks);
+                    foreach ($resultList as $item) {
+                        $result[] = $item;
+                    }
+                }
+            }
+
+            if ($hasNextSpecial) {
+                $token = $this->specialTokens[$nextSpecial];
+                $result[] = $token;
+                $start = $end + strlen($nextSpecial);
+            } else {
+                break;
             }
         }
 
@@ -118,5 +255,20 @@ class Encoding
         }
 
         return $out;
+    }
+
+    public function decode(array $tokens): string
+    {
+        $result = '';
+        foreach ($tokens as $token) {
+            $out = $this->decodeMergeableRanks[$token];
+            if (is_null($out)) {
+                $out = $this->decodeSpecialTokens[$token];
+            }
+
+            $result .= $out;
+        }
+
+        return $result;
     }
 }
