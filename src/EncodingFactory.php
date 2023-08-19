@@ -121,6 +121,15 @@ class EncodingFactory
         }
 
         static::$encodingConstructors = [
+            'gpt2' => function () {
+                $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/gpt2.tiktoken');
+                $pattenRegex = "/'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/";
+                $specialTokens = [
+                    self::ENDOFTEXT => 50256,
+                ];
+
+                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50257);
+            },
             'r50k_base' => function () {
                 $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/r50k_base.tiktoken');
                 $pattenRegex = "/'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/";
