@@ -24,8 +24,5 @@
         "psr-4": {
             "Danny50610\\BpeTokeniser\\Tests\\": "tests/"
         }
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit"
     }
 }
