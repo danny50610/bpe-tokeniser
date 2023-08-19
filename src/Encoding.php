@@ -19,15 +19,23 @@ class Encoding
 
     protected $decodeSpecialTokens;
 
-    public function __construct(&$mergeableRanks, string $pattenRegex, array $specialTokens)
+    public function __construct(&$mergeableRanks, string $pattenRegex, array $specialTokens = [], ?int $explicitNVocab = null)
     {
         $this->mergeableRanks = $mergeableRanks;
         $this->pattenRegex = $pattenRegex . 'u'; // u for unicode
         $this->specialTokens = $specialTokens;
 
+        $maxTokenValue = 0;
+
         $escapeToken = [];
+        $this->decodeSpecialTokens = [];
         foreach ($this->specialTokens as $token => $rank) {
             $escapeToken[] = str_replace('|', '\|', $token);
+            $this->decodeSpecialTokens[$rank] = $token;
+
+            if ($rank > $maxTokenValue) {
+                $maxTokenValue = $rank;
+            }
         }
         $this->specialRegex = '/' . implode('|', $escapeToken) . '/u';
 
@@ -35,25 +43,25 @@ class Encoding
         $this->decodeMergeableRanks = [];
         foreach ($this->mergeableRanks as $token => $rank) {
             $this->decodeMergeableRanks[$rank] = $token;
+
+            if ($rank > $maxTokenValue) {
+                $maxTokenValue = $rank;
+            }
         }
 
         if (count($this->mergeableRanks) !== count($this->decodeMergeableRanks)) {
             throw new Exception('Encoder and decoder must be of equal length; maybe you had duplicate token indices in your encoder?');
         }
 
-        $this->decodeSpecialTokens = [];
-        foreach ($this->specialTokens as $token => $rank) {
-            $this->decodeSpecialTokens[$rank] = $token;
-        }
+        if (!is_null($explicitNVocab)) {
+            if (count($this->mergeableRanks) + count($this->specialTokens) !== $explicitNVocab) {
+                throw new Exception();
+            }
 
-        /** TODO: check
-        self.max_token_value = max(
-            max(mergeable_ranks.values()), max(special_tokens.values(), default=0)
-        )
-        if explicit_n_vocab:
-            assert len(mergeable_ranks) + len(special_tokens) == explicit_n_vocab
-            assert self.max_token_value == explicit_n_vocab - 1
-         */
+            if ($maxTokenValue !== $explicitNVocab - 1) {
+                throw new Exception("explicitNVocab check failed: {$maxTokenValue} !== {$explicitNVocab} - 1");
+            }
+        }
     }
 
     public function getSpecialTokensSet()
@@ -196,7 +204,9 @@ class Encoding
         for ($i = 0; $i < count($parts) - 2; $i++) {
             $rank = $getRank($parts, $i, 0);
             if (!is_null($rank)) {
-                assert($rank !== PHP_INT_MAX);
+                if ($rank === PHP_INT_MAX) {
+                    throw new Exception();
+                }
                 $parts[$i][1] = $rank;
             }
         }
