@@ -88,3 +88,4 @@ $RECYCLE.BIN/
 tinker.php
 .phpunit.result.cache
 .phpunit.cache/
+composer.lock
