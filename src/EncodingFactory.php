@@ -121,6 +121,36 @@ class EncodingFactory
         }
 
         static::$encodingConstructors = [
+            'r50k_base' => function () {
+                $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/r50k_base.tiktoken');
+                $pattenRegex = "/'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/";
+                $specialTokens = [
+                    self::ENDOFTEXT => 50256,
+                ];
+
+                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50257);
+            },
+            'p50k_base' => function () {
+                $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/p50k_base.tiktoken');
+                $pattenRegex = "/'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/";
+                $specialTokens = [
+                    self::ENDOFTEXT => 50256,
+                ];
+
+                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50281);
+            },
+            'p50k_edit' => function () {
+                $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/p50k_base.tiktoken');
+                $pattenRegex = "/'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/";
+                $specialTokens = [
+                    self::ENDOFTEXT => 50256,
+                    self::FIM_PREFIX => 50281,
+                    self::FIM_MIDDLE => 50282,
+                    self::FIM_SUFFIX => 50283,
+                ];
+
+                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens);
+            },
             'cl100k_base' => function () {
                 $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/cl100k_base.tiktoken');
                 $pattenRegex = "/(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\r\n\p{L}\p{N}]?\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n]*|\s*[\r\n]+|\s+(?!\S)|\s+/";

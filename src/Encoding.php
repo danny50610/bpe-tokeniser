@@ -71,7 +71,7 @@ class Encoding
 
     /**
      * Encodes a string into tokens, ignoring special tokens.
-     * This is equivalent to `encode($text, disallowedSpecial=[])` (but slightly faster).
+     * This is equivalent to `encode($text, disallowedSpecial: [])` (but slightly faster).
      *
      * @param string $text
      * @return int[]

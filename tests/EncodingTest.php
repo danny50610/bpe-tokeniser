@@ -18,19 +18,44 @@ class EncodingTest extends TestCase
             [$text, $tokens] = $testCase;
 
             $outputTokens = $enc->encode($text);
-            $this->assertSame($tokens, $outputTokens);
+            $this->assertSame($tokens, $outputTokens, 'Encode error: ' . $text);
 
             $outputText = $enc->decode($tokens);
-            $this->assertSame($text, $outputText);
+            $this->assertSame($text, $outputText, 'Decode error: ' . $text);
         }
     }
 
     public static function textDataProvider()
     {
         return [
-            [
+            'r50k_base' => [
+                'r50k_base',
+                [
+                    ['tiktoken is great!', [83, 1134, 30001, 318, 1049, 0]],
+                    ['台北 101 高度 508 公尺', [20998, 108, 44293, 245, 8949, 16268, 45865, 41753, 99, 2026, 23, 10263, 227, 105, 22887, 118]],
+                    ['🫡🍣顏文字', [8582, 104, 94, 8582, 235, 96, 165, 94, 237, 23877, 229, 27764, 245]],
+                ],
+            ],
+            'p50k_base' => [
+                'p50k_base',
+                [
+                    ['tiktoken is great!', [83, 1134, 30001, 318, 1049, 0]],
+                    ['台北 101 高度 508 公尺', [20998, 108, 44293, 245, 8949, 16268, 45865, 41753, 99, 2026, 23, 10263, 227, 105, 22887, 118]],
+                    ['🫡🍣顏文字', [8582, 104, 94, 8582, 235, 96, 165, 94, 237, 23877, 229, 27764, 245]],
+                ],
+            ],
+            'p50k_edit' => [
+                'p50k_edit',
+                [
+                    ['tiktoken is great!', [83, 1134, 30001, 318, 1049, 0]],
+                    ['台北 101 高度 508 公尺', [20998, 108, 44293, 245, 8949, 16268, 45865, 41753, 99, 2026, 23, 10263, 227, 105, 22887, 118]],
+                    ['🫡🍣顏文字', [8582, 104, 94, 8582, 235, 96, 165, 94, 237, 23877, 229, 27764, 245]],
+                ],
+            ],
+            'cl100k_base' => [
                 'cl100k_base',
                 [
+                    ['It work!!!', [2181, 990, 12340]],
                     ['tiktoken is great!', [83, 1609, 5963, 374, 2294, 0]],
                     ['台北 101 高度 508 公尺', [55038, 49409, 220, 4645, 18630, 41519, 27479, 220, 19869, 35469, 105, 16175, 118]],
                     ['🫡🍣顏文字', [9468, 104, 94, 9468, 235, 96, 14167, 237, 88435]],
@@ -38,8 +63,6 @@ class EncodingTest extends TestCase
             ]
         ];
     }
-
-    // TODO: test: encodeOrdinary === encode($text, disallowedSpecial=[])
 
     /**
      * @dataProvider specialDataProvider
@@ -69,4 +92,6 @@ class EncodingTest extends TestCase
             ],
         ];
     }
+
+    // TODO: test: encodeOrdinary === encode($text, disallowedSpecial: [])
 }
