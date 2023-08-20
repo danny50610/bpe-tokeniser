@@ -3,6 +3,7 @@
 namespace Danny50610\BpeTokeniser;
 
 use Exception;
+use InvalidArgumentException;
 use ValueError;
 
 class Encoding
@@ -53,16 +54,16 @@ class Encoding
         }
 
         if (count($this->mergeableRanks) !== count($this->decodeMergeableRanks)) {
-            throw new Exception('Encoder and decoder must be of equal length; maybe you had duplicate token indices in your encoder?');
+            throw new InvalidArgumentException('Encoder and decoder must be of equal length; maybe you had duplicate token indices in your encoder?');
         }
 
         if (!is_null($explicitNVocab)) {
             if (count($this->mergeableRanks) + count($this->specialTokens) !== $explicitNVocab) {
-                throw new Exception();
+                throw new InvalidArgumentException("explicitNVocab check failed: total token count mismatch");
             }
 
             if ($maxTokenValue !== $explicitNVocab - 1) {
-                throw new Exception("explicitNVocab check failed: {$maxTokenValue} !== {$explicitNVocab} - 1");
+                throw new InvalidArgumentException("explicitNVocab check failed: Max token({$maxTokenValue}) !== {$explicitNVocab} - 1");
             }
         }
     }

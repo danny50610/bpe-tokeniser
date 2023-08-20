@@ -2,11 +2,49 @@
 
 namespace Danny50610\BpeTokeniser\Tests;
 
+use Danny50610\BpeTokeniser\Encoding;
 use Danny50610\BpeTokeniser\EncodingFactory;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class EncodingTest extends TestCase
 {
+    public function testDuplicateToeknInMergeableRanks()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Encoder and decoder must be of equal length; maybe you had duplicate token indices in your encoder?');
+
+        $mergeableRanks = [
+            'a' => 1,
+            'b' => 1,
+        ];
+        new Encoding('test', $mergeableRanks, '', []);
+    }
+
+    public function testTotalToeknMismatch()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('explicitNVocab check failed: total token count mismatch');
+
+        $mergeableRanks = [
+            'a' => 0,
+            'b' => 1,
+        ];
+        new Encoding('test', $mergeableRanks, '', ['c' => 2], 10); // 10 is wrong
+    }
+
+    public function testMaxToeknMismatch()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('explicitNVocab check failed: Max token(10) !== 3 - 1');
+
+        $mergeableRanks = [
+            'a' => 0,
+            'b' => 1,
+        ];
+        new Encoding('test', $mergeableRanks, '', ['c' => 10], 3);
+    }
+
     /**
      * @dataProvider textDataProvider
      */
