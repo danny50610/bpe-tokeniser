@@ -85,7 +85,7 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,composer
 
-tinker.php
+_tinker*.php
 .phpunit.result.cache
 .phpunit.cache/
 composer.lock

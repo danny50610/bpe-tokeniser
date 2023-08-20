@@ -18,10 +18,18 @@ composer require danny50610/bpe-tokeniser
 
 ### GPT-4 / GPT-3.5-Turbo (cl100k_base)
 ```php
-<?php
 use Danny50610\BpeTokeniser\EncodingFactory;
 
 $enc = EncodingFactory::createByEncodingName('cl100k_base');
+
+var_dump($enc->decode($enc->encode("hello world")));
+// output: string(11) "hello world"
+```
+
+```php
+use Danny50610\BpeTokeniser\EncodingFactory;
+
+$enc = EncodingFactory::createByModelName('gpt-3.5-turbo');
 
 var_dump($enc->decode($enc->encode("hello world")));
 // output: string(11) "hello world"
