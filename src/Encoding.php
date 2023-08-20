@@ -280,7 +280,7 @@ class Encoding
     {
         $result = '';
         foreach ($tokens as $token) {
-            $out = $this->decodeMergeableRanks[$token];
+            $out = $this->decodeMergeableRanks[$token] ?? null;
             if (is_null($out)) {
                 $out = $this->decodeSpecialTokens[$token];
             }

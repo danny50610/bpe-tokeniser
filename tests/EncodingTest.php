@@ -139,5 +139,13 @@ class EncodingTest extends TestCase
         ];
     }
 
+    public function testDecodeWithSpecial()
+    {
+        $enc = EncodingFactory::createByEncodingName('cl100k_base');
+        $text = $enc->decode([9906, 4435, 100257, 9906, 294, 13184, 13]);
+
+        $this->assertSame('Hello World<|endoftext|>Hello danny.', $text);
+    }
+
     // TODO: test: encodeOrdinary === encode($text, disallowedSpecial: [])
 }
