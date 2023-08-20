@@ -70,7 +70,7 @@ class EncodingFactory
     public static function registerModelToEncoding(string $modelName, string $encodingName)
     {
         if (array_key_exists($modelName, self::$modelToEncoding)) {
-            throw new Exception("{$modelName} already exists");
+            throw new InvalidArgumentException("\"{$modelName}\" already exists in map");
         }
 
         self::$modelToEncoding[$modelName] = $encodingName;
