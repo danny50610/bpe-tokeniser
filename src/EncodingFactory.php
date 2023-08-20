@@ -2,6 +2,7 @@
 
 namespace Danny50610\BpeTokeniser;
 
+use Closure;
 use Exception;
 use SplFileObject;
 
@@ -63,9 +64,38 @@ class EncodingFactory
         "gpt-35-turbo" => "cl100k_base",    # Azure deployment name
     ];
 
-    protected static $encodingInstance = [];
-
     protected static $encodingConstructors = null;
+
+    public static function registerModelToEncoding(string $modelName, string $encodingName)
+    {
+        if (array_key_exists($modelName, self::$modelToEncoding)) {
+            throw new Exception("{$modelName} already exists");
+        }
+
+        self::$modelToEncoding[$modelName] = $encodingName;
+    }
+
+    public static function registerModelPrefixToEncoding(string $modelPrefix, string $encodingName)
+    {
+        if (array_key_exists($modelPrefix, self::$modelPrefixToEncoding)) {
+            throw new Exception("{$modelPrefix} already exists");
+        }
+
+        self::$modelPrefixToEncoding[$modelPrefix] = $encodingName;
+    }
+
+    public static function registerEncoding(string $encodingName, Closure $constructor)
+    {
+        static::initConstructor();
+
+        if (array_key_exists($encodingName, self::$encodingConstructors)) {
+            throw new Exception("{$encodingName} already exists");
+        }
+
+        self::$encodingConstructors[$encodingName] = $constructor;
+    }
+
+    protected static $encodingInstance = [];
 
     public static function createByModelName(string $modelName): Encoding
     {

@@ -34,3 +34,5 @@ $enc = EncodingFactory::createByModelName('gpt-3.5-turbo');
 var_dump($enc->decode($enc->encode("hello world")));
 // output: string(11) "hello world"
 ```
+
+For available encodings, see `src/EncodingFactory.php`
