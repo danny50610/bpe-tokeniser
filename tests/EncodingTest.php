@@ -147,5 +147,13 @@ class EncodingTest extends TestCase
         $this->assertSame('Hello World<|endoftext|>Hello danny.', $text);
     }
 
-    // TODO: test: encodeOrdinary === encode($text, disallowedSpecial: [])
+    public function testEncodeOrdinary()
+    {
+        $enc = EncodingFactory::createByEncodingName('cl100k_base');
+        $tokens1 = $enc->encodeOrdinary('🫡🍣顏文字');
+        $tokens2 = $enc->encode('🫡🍣顏文字', disallowedSpecial: []);
+
+        $this->assertSame([9468, 104, 94, 9468, 235, 96, 14167, 237, 88435], $tokens1);
+        $this->assertSame($tokens1, $tokens2);
+    }
 }
