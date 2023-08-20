@@ -3,7 +3,6 @@
 namespace Danny50610\BpeTokeniser;
 
 use Closure;
-use Exception;
 use InvalidArgumentException;
 use SplFileObject;
 
@@ -79,7 +78,7 @@ class EncodingFactory
     public static function registerModelPrefixToEncoding(string $modelPrefix, string $encodingName)
     {
         if (array_key_exists($modelPrefix, self::$modelPrefixToEncoding)) {
-            throw new Exception("{$modelPrefix} already exists");
+            throw new InvalidArgumentException("Prefix \"{$modelPrefix}\" already exists in map");
         }
 
         self::$modelPrefixToEncoding[$modelPrefix] = $encodingName;

@@ -62,6 +62,22 @@ class EncodingFactoryTest extends TestCase
         EncodingFactory::registerModelToEncoding('gpt-4', 'cl100k_base');
     }
 
+    public function testRegisterModelPrefixToEncoding()
+    {
+        EncodingFactory::registerModelPrefixToEncoding('gpt-9000-', 'cl100k_base');
+
+        $enc = EncodingFactory::createByModelName('gpt-9000-danny');
+        $this->assertSame('cl100k_base', $enc->getName());
+    }
+
+    public function testRegisterModelPrefixToEncodingAlreadyExists()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Prefix "gpt-4-" already exists in map');
+
+        EncodingFactory::registerModelPrefixToEncoding('gpt-4-', 'cl100k_base');
+    }
+
     public function testRegisterEncoding()
     {
         EncodingFactory::registerEncoding('danny', function () {
