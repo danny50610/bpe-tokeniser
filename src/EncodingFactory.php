@@ -90,7 +90,7 @@ class EncodingFactory
         static::initConstructor();
 
         if (array_key_exists($encodingName, self::$encodingConstructors)) {
-            throw new Exception("{$encodingName} already exists");
+            throw new InvalidArgumentException("\"{$encodingName}\" already exists");
         }
 
         self::$encodingConstructors[$encodingName] = $constructor;
