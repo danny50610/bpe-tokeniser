@@ -7,6 +7,8 @@ use ValueError;
 
 class Encoding
 {
+    protected $name;
+
     protected $mergeableRanks;
 
     protected $decodeMergeableRanks;
@@ -19,8 +21,9 @@ class Encoding
 
     protected $decodeSpecialTokens;
 
-    public function __construct(&$mergeableRanks, string $pattenRegex, array $specialTokens = [], ?int $explicitNVocab = null)
+    public function __construct(string $name, &$mergeableRanks, string $pattenRegex, array $specialTokens = [], ?int $explicitNVocab = null)
     {
+        $this->name = $name;
         $this->mergeableRanks = $mergeableRanks;
         $this->pattenRegex = $pattenRegex . 'u'; // u for unicode
         $this->specialTokens = $specialTokens;
@@ -62,6 +65,11 @@ class Encoding
                 throw new Exception("explicitNVocab check failed: {$maxTokenValue} !== {$explicitNVocab} - 1");
             }
         }
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function getSpecialTokensSet()

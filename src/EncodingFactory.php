@@ -4,6 +4,7 @@ namespace Danny50610\BpeTokeniser;
 
 use Closure;
 use Exception;
+use InvalidArgumentException;
 use SplFileObject;
 
 class EncodingFactory
@@ -115,8 +116,8 @@ class EncodingFactory
         }
 
         if (is_null($encodingName)) {
-            throw new Exception(
-                "Could not automatically map {$modelName} to a tokeniser." +
+            throw new InvalidArgumentException(
+                "Could not automatically map \"{$modelName}\" to a tokeniser. " .
                 "Please use `createByEncodingName` to explicitly get the tokeniser you expect."
             );
         }
@@ -133,7 +134,7 @@ class EncodingFactory
         static::initConstructor();
 
         if (!array_key_exists($encodingName, static::$encodingConstructors)) {
-            throw new Exception("Unknown encoding {$encodingName}");
+            throw new InvalidArgumentException("Unknown encoding: \"{$encodingName}\"");
         }
 
         $constructor = static::$encodingConstructors[$encodingName];
@@ -158,7 +159,7 @@ class EncodingFactory
                     self::ENDOFTEXT => 50256,
                 ];
 
-                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50257);
+                return new Encoding('gpt2', $mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50257);
             },
             'r50k_base' => function () {
                 $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/r50k_base.tiktoken');
@@ -167,7 +168,7 @@ class EncodingFactory
                     self::ENDOFTEXT => 50256,
                 ];
 
-                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50257);
+                return new Encoding('r50k_base', $mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50257);
             },
             'p50k_base' => function () {
                 $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/p50k_base.tiktoken');
@@ -176,7 +177,7 @@ class EncodingFactory
                     self::ENDOFTEXT => 50256,
                 ];
 
-                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50281);
+                return new Encoding('p50k_base', $mergeableRanks, $pattenRegex, $specialTokens, explicitNVocab: 50281);
             },
             'p50k_edit' => function () {
                 $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/p50k_base.tiktoken');
@@ -188,7 +189,7 @@ class EncodingFactory
                     self::FIM_SUFFIX => 50283,
                 ];
 
-                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens);
+                return new Encoding('p50k_edit', $mergeableRanks, $pattenRegex, $specialTokens);
             },
             'cl100k_base' => function () {
                 $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/cl100k_base.tiktoken');
@@ -201,7 +202,7 @@ class EncodingFactory
                     self::ENDOFPROMPT => 100276,
                 ];
 
-                return new Encoding($mergeableRanks, $pattenRegex, $specialTokens);
+                return new Encoding('cl100k_base', $mergeableRanks, $pattenRegex, $specialTokens);
             },
         ];
     }
