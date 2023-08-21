@@ -6,6 +6,7 @@ use Danny50610\BpeTokeniser\Encoding;
 use Danny50610\BpeTokeniser\EncodingFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ValueError;
 
 class EncodingTest extends TestCase
 {
@@ -163,5 +164,24 @@ class EncodingTest extends TestCase
 
         $this->assertSame([9468, 104, 94, 9468, 235, 96, 14167, 237, 88435], $tokens1);
         $this->assertSame($tokens1, $tokens2);
+    }
+
+    public function testEncodeSpecialCheck()
+    {
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage('Encountered text corresponding to disallowed special token');
+
+        $enc = EncodingFactory::createByEncodingName('cl100k_base');
+
+        $enc->encode('<|endoftext|>');
+    }
+
+    public function testEncodeSpecialWithAllow()
+    {
+        $enc = EncodingFactory::createByEncodingName('cl100k_base');
+
+        $tokens = $enc->encode('<|endoftext|>Hello<|fim_prefix|>', ['<|fim_prefix|>'], []);
+
+        $this->assertSame([27, 91, 8862, 728, 428, 91, 29, 9906, 100258], $tokens);
     }
 }
