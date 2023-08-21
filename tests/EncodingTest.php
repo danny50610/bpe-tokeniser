@@ -150,6 +150,14 @@ class EncodingTest extends TestCase
     public function testEncodeOrdinary()
     {
         $enc = EncodingFactory::createByEncodingName('cl100k_base');
+        $tokens = $enc->encodeOrdinary('Hello world');
+
+        $this->assertSame([9906, 1917], $tokens);
+    }
+
+    public function testEncodeOrdinaryWithDisallowedSpecial()
+    {
+        $enc = EncodingFactory::createByEncodingName('cl100k_base');
         $tokens1 = $enc->encodeOrdinary('🫡🍣顏文字');
         $tokens2 = $enc->encode('🫡🍣顏文字', disallowedSpecial: []);
 
