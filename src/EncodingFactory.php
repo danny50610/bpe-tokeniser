@@ -16,6 +16,7 @@ class EncodingFactory
 
     protected static $modelToEncoding = [
         # chat
+        "gpt-4o" => "o200k_base",
         "gpt-4" => "cl100k_base",
         "gpt-3.5-turbo" => "cl100k_base",
         "gpt-35-turbo" => "cl100k_base",  # Azure deployment name
@@ -59,9 +60,15 @@ class EncodingFactory
 
     protected static $modelPrefixToEncoding = [
         # chat
+        "gpt-4o-" => "o200k_base",          # e.g., gpt-4o-2024-05-13
         "gpt-4-" => "cl100k_base",          # e.g., gpt-4-0314, etc., plus gpt-4-32k
         "gpt-3.5-turbo-" => "cl100k_base",  # e.g, gpt-3.5-turbo-0301, -0401, etc.
         "gpt-35-turbo" => "cl100k_base",    # Azure deployment name
+         # fine-tuned
+        "ft:gpt-4" => "cl100k_base",
+        "ft:gpt-3.5-turbo" => "cl100k_base",
+        "ft:davinci-002" => "cl100k_base",
+        "ft:babbage-002" => "cl100k_base",
     ];
 
     protected static $encodingConstructors = null;
@@ -202,6 +209,16 @@ class EncodingFactory
                 ];
 
                 return new Encoding('cl100k_base', $mergeableRanks, $pattenRegex, $specialTokens);
+            },
+            'o200k_base' => function () {
+                $mergeableRanks = static::loadTiktokenBpe(__DIR__ . '/../assets/o200k_base.tiktoken');
+                $pattenRegex = "/[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]*[\p{Ll}\p{Lm}\p{Lo}\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?|[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]+[\p{Ll}\p{Lm}\p{Lo}\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n\/]*|\s*[\r\n]+|\s+(?!\S)|\s+/";
+                $specialTokens = [
+                    self::ENDOFTEXT => 199999,
+                    self::ENDOFPROMPT => 200018,
+                ];
+
+                return new Encoding('o200k_base', $mergeableRanks, $pattenRegex, $specialTokens);
             },
         ];
     }
