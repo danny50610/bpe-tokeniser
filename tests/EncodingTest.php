@@ -5,6 +5,7 @@ namespace Danny50610\BpeTokeniser\Tests;
 use Danny50610\BpeTokeniser\Encoding;
 use Danny50610\BpeTokeniser\EncodingFactory;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ValueError;
 
@@ -46,9 +47,7 @@ class EncodingTest extends TestCase
         new Encoding('test', $mergeableRanks, '', ['c' => 10], 3);
     }
 
-    /**
-     * @dataProvider textDataProvider
-     */
+    #[DataProvider('textDataProvider')]
     public function testEncodeAndDecode($encodingName, $testCaseList)
     {
         $enc = EncodingFactory::createByEncodingName($encodingName);
@@ -124,9 +123,7 @@ class EncodingTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider specialDataProvider
-     */
+    #[DataProvider('specialDataProvider')]
     public function testEncodeWithSpecial($encodingName, $testCaseList)
     {
         $enc = EncodingFactory::createByEncodingName($encodingName);
