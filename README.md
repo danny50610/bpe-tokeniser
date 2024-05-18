@@ -8,6 +8,15 @@
 
 PHP port for [openai/tiktoken](https://github.com/openai/tiktoken) (most)
 
+## Supported encodings
+
+- gpt-3.5-turbo
+- gpt-4
+- gpt-4o
+- more ...
+
+For available encodings, see `src/EncodingFactory.php`
+
 ## Installation
 
 ```sh
@@ -45,5 +54,3 @@ $enc = EncodingFactory::createByModelName('gpt-3.5-turbo');
 var_dump($enc->decode($enc->encode("hello world")));
 // output: string(11) "hello world"
 ```
-
-For available encodings, see `src/EncodingFactory.php`
