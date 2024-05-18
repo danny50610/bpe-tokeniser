@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        phpVersion: ['8.1', '8.2']
+        phpVersion: ['8.1', '8.2', '8.3']
 
     steps:
     - name: Setup PHP with specific version of PECL extension
