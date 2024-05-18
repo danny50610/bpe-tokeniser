@@ -51,7 +51,8 @@ jobs:
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v4
-      with:
+      env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
         files: ./coverage.xml
         verbose: true
