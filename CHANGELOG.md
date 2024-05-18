@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased] - yyyy-mm-dd
+## [0.2.0] - yyyy-mm-dd
 
 - Add o200k_base
 
