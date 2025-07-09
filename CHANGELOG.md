@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.2.0] - yyyy-mm-dd
+## [0.2.0] - 2024-05-18
 
 - Add o200k_base
 
