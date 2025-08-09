@@ -13,6 +13,8 @@ PHP port for [openai/tiktoken](https://github.com/openai/tiktoken) (most)
 - gpt-3.5-turbo
 - gpt-4
 - gpt-4o
+- gpt-oss
+- gpt-5
 - more ...
 
 For available encodings, see `src/EncodingFactory.php`
@@ -24,6 +26,27 @@ composer require danny50610/bpe-tokeniser
 ```
 
 ## Example
+
+### GPT-5 (o200k_base)
+```php
+use Danny50610\BpeTokeniser\EncodingFactory;
+
+$enc = EncodingFactory::createByModelName('gpt-5-2025-08-07');
+
+var_dump($enc->encode("hello world"));
+/**
+ * output: 
+ * array(2) {
+ *  [0]=>
+ *  int(24912)
+ *  [1]=>
+ *  int(2375)
+ * }
+ */
+
+var_dump($enc->decode($enc->encode("hello world")));
+// output: string(11) "hello world"
+```
 
 ### GPT-4 / GPT-3.5-Turbo (cl100k_base)
 ```php

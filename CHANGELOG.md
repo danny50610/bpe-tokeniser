@@ -3,6 +3,7 @@
 ## [0.3.0] - 2025-08-09
 
 - Support for `GPT-5`
+- Add o200k_harmony (for gpt-oss)
 
 ## [0.2.0] - 2024-05-18
 
