@@ -1,7 +1,7 @@
 {
     "name": "danny50610/bpe-tokeniser",
     "description": "PHP port for openai/tiktoken (most)",
-    "keywords": ["tokenizer", "tiktoken", "gpt-4", "gpt-3.5", "cl100k_base"],
+    "keywords": ["tokenizer", "tiktoken", "gpt-5", "gpt-4", "gpt-3.5", "cl100k_base"],
     "type": "library",
     "license": "MIT",
     "authors": [
